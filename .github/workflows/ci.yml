@@ -1,0 +1,89 @@
+name: CI
+
+# Controls when the action will run.
+# For various triggers, see the commented out lines below.
+on:
+  # Triggers the workflow on push events for branches and pull requests
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  # Build job
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [ '20.x' ] # Use Node.js 20.x for build and testing
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Fetch all history for accurate blame/log analysis
+
+      - name: Set up Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm' # Cache npm dependencies
+
+      - name: Install dependencies
+        run: npm ci
+        # Use 'npm ci' for faster, more reliable installs in CI environments
+
+      - name: Lint with ESLint
+        run: npm run lint
+        # Assumes a 'lint' script in package.json that runs ESLint
+
+      - name: Test with Jest
+        run: npm test
+        # Assumes a 'test' script in package.json that runs Jest
+
+      - name: Build extension
+        run: npm run build --if-present
+        # This step should build the production-ready extension. Assumes a 'build' script.
+        # The '--if-present' flag ensures it doesn't fail if no build script exists.
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: insightlog-extension-build
+          path: dist/ # Or the actual output directory for your build
+
+  # Deploy job (Optional, uncomment and configure if needed)
+  # deploy:
+  #   needs: build # This job runs only after the build job succeeds
+  #   runs-on: ubuntu-latest
+  #   if: github.ref == 'refs/heads/main' && github.event_name == 'push' # Only deploy on push to main
+  #   steps:
+  #     - name: Download build artifacts
+  #       uses: actions/download-artifact@v4
+  #       with:
+  #         name: insightlog-extension-build
+  #         path: dist/
+  #
+  #     # Add deployment steps here. Examples:
+  #     # - name: Deploy to Chrome Web Store (using chrome-webstore-upload-cli)
+  #     #   env:
+  #     #     CHROME_WEBSTORE_EXTENSION_ID: ${{ secrets.CHROME_WEBSTORE_EXTENSION_ID }}
+  #     #     CHROME_WEBSTORE_CLIENT_ID: ${{ secrets.CHROME_WEBSTORE_CLIENT_ID }}
+  #     #     CHROME_WEBSTORE_CLIENT_SECRET: ${{ secrets.CHROME_WEBSTORE_CLIENT_SECRET }}
+  #     #     CHROME_WEBSTORE_REFRESH_TOKEN: ${{ secrets.CHROME_WEBSTORE_REFRESH_TOKEN }}
+  #     #   run: npx chrome-webstore-upload upload --source dist/ --method publish --extensionid $CHROME_WEBSTORE_EXTENSION_ID
+  #     #
+  #     # - name: Deploy to Firefox Add-ons (using web-ext)
+  #     #   env:
+  #     #     FIREFOX_API_KEY: ${{ secrets.FIREFOX_API_KEY }}
+  #     #     FIREFOX_API_SECRET: ${{ secrets.FIREFOX_API_SECRET }}
+  #     #   run: npm install -g web-ext && web-ext sign --source-dir dist/ --api-key $FIREFOX_API_KEY --api-secret $FIREFOX_API_SECRET
+
+# Notes:
+# This CI workflow is configured for a Node.js-based browser extension.
+# It assumes standard npm scripts for linting ('lint'), testing ('test'), and building ('build').
+# The specific build output path ('dist/') may need adjustment based on your project's configuration.
+# Deployment steps are commented out by default and require sensitive secrets to be configured in GitHub.
+# If your project uses a different package manager (e.g., yarn) or testing framework, adjust the commands accordingly.
+# For JavaScript/Node.js projects, ESLint is a common linter, and Jest is a popular testing framework.
+# Consider adding more matrix jobs for different Node.js versions or OS if cross-platform compatibility is critical.
