@@ -1,89 +1,103 @@
 name: CI
 
 # Controls when the action will run.
-# For various triggers, see the commented out lines below.
+# For more information see: https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions
+
+# Workflow runs on push and pull request events
 on:
-  # Triggers the workflow on push events for branches and pull requests
   push:
-    branches: [ main ]
+    branches: [ "main" ]
   pull_request:
-    branches: [ main ]
+    branches: [ "main" ]
 
 jobs:
-  # Build job
-  build:
+  build-and-test:
     runs-on: ubuntu-latest
+
     strategy:
       matrix:
-        node-version: [ '20.x' ] # Use Node.js 20.x for build and testing
+        node-version: ["20.x", "22.x"]
 
     steps:
-      - name: Checkout repository
+      - name: Checkout Repository
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0 # Fetch all history for accurate blame/log analysis
 
-      - name: Set up Node.js ${{ matrix.node-version }}
+      - name: Setup Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-          cache: 'npm' # Cache npm dependencies
+          cache: 'npm'
+          cache-dependency-path: '**/package-lock.json'
 
-      - name: Install dependencies
+      - name: Install Dependencies
         run: npm ci
-        # Use 'npm ci' for faster, more reliable installs in CI environments
 
-      - name: Lint with ESLint
-        run: npm run lint
-        # Assumes a 'lint' script in package.json that runs ESLint
+      - name: Run Linter and Formatter (Biome)
+        run: npx @biomejs/biome format --diagnostic-level=warn --no-errors-for-unreadable-file . && npx @biomejs/biome lint --diagnostic-level=warn .
 
-      - name: Test with Jest
-        run: npm test
-        # Assumes a 'test' script in package.json that runs Jest
-
-      - name: Build extension
+      - name: Build Extension
         run: npm run build --if-present
-        # This step should build the production-ready extension. Assumes a 'build' script.
-        # The '--if-present' flag ensures it doesn't fail if no build script exists.
 
-      - name: Upload build artifacts
+      - name: Run Unit and Integration Tests (Vitest)
+        run: npm run test:unit
+
+      - name: Run End-to-End Tests (Playwright)
+        run: npm run test:e2e
+
+      - name: Upload Coverage Report (Codecov)
+        uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./coverage/**/*.json
+          fail_ci_if_error: true
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main' # Only upload from main branch pushes
+
+  deploy:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push' # Only deploy from main branch pushes
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+          cache-dependency-path: '**/package-lock.json'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Build Production Extension
+        env:
+          NODE_ENV: production
+        run: npm run build --if-present
+
+      - name: Package Extension for Chrome
         uses: actions/upload-artifact@v4
         with:
-          name: insightlog-extension-build
-          path: dist/ # Or the actual output directory for your build
+          name: chrono-lens-chrome-extension
+          path: ./dist/chrome # Assuming your build output for Chrome is in './dist/chrome'
 
-  # Deploy job (Optional, uncomment and configure if needed)
-  # deploy:
-  #   needs: build # This job runs only after the build job succeeds
-  #   runs-on: ubuntu-latest
-  #   if: github.ref == 'refs/heads/main' && github.event_name == 'push' # Only deploy on push to main
-  #   steps:
-  #     - name: Download build artifacts
-  #       uses: actions/download-artifact@v4
-  #       with:
-  #         name: insightlog-extension-build
-  #         path: dist/
-  #
-  #     # Add deployment steps here. Examples:
-  #     # - name: Deploy to Chrome Web Store (using chrome-webstore-upload-cli)
-  #     #   env:
-  #     #     CHROME_WEBSTORE_EXTENSION_ID: ${{ secrets.CHROME_WEBSTORE_EXTENSION_ID }}
-  #     #     CHROME_WEBSTORE_CLIENT_ID: ${{ secrets.CHROME_WEBSTORE_CLIENT_ID }}
-  #     #     CHROME_WEBSTORE_CLIENT_SECRET: ${{ secrets.CHROME_WEBSTORE_CLIENT_SECRET }}
-  #     #     CHROME_WEBSTORE_REFRESH_TOKEN: ${{ secrets.CHROME_WEBSTORE_REFRESH_TOKEN }}
-  #     #   run: npx chrome-webstore-upload upload --source dist/ --method publish --extensionid $CHROME_WEBSTORE_EXTENSION_ID
-  #     #
-  #     # - name: Deploy to Firefox Add-ons (using web-ext)
-  #     #   env:
-  #     #     FIREFOX_API_KEY: ${{ secrets.FIREFOX_API_KEY }}
-  #     #     FIREFOX_API_SECRET: ${{ secrets.FIREFOX_API_SECRET }}
-  #     #   run: npm install -g web-ext && web-ext sign --source-dir dist/ --api-key $FIREFOX_API_KEY --api-secret $FIREFOX_API_SECRET
+      - name: Package Extension for Firefox
+        uses: actions/upload-artifact@v4
+        with:
+          name: chrono-lens-firefox-extension
+          path: ./dist/firefox # Assuming your build output for Firefox is in './dist/firefox'
 
-# Notes:
-# This CI workflow is configured for a Node.js-based browser extension.
-# It assumes standard npm scripts for linting ('lint'), testing ('test'), and building ('build').
-# The specific build output path ('dist/') may need adjustment based on your project's configuration.
-# Deployment steps are commented out by default and require sensitive secrets to be configured in GitHub.
-# If your project uses a different package manager (e.g., yarn) or testing framework, adjust the commands accordingly.
-# For JavaScript/Node.js projects, ESLint is a common linter, and Jest is a popular testing framework.
-# Consider adding more matrix jobs for different Node.js versions or OS if cross-platform compatibility is critical.
+      # Placeholder for actual deployment steps (e.g., publishing to Chrome Web Store/Firefox Add-ons)
+      # These steps would typically involve using dedicated actions or CLI tools and secrets.
+      - name: Placeholder - Deploy to Chrome Web Store
+        run: echo "Deploying to Chrome Web Store..." # Replace with actual deployment command
+        env:
+          CHROME_WEB_STORE_CLIENT_ID: ${{ secrets.CHROME_WEB_STORE_CLIENT_ID }}
+          CHROME_WEB_STORE_CLIENT_SECRET: ${{ secrets.CHROME_WEB_STORE_CLIENT_SECRET }}
+          CHROME_WEB_STORE_REFRESH_TOKEN: ${{ secrets.CHROME_WEB_STORE_REFRESH_TOKEN }}
+
+      - name: Placeholder - Deploy to Firefox Add-ons
+        run: echo "Deploying to Firefox Add-ons..." # Replace with actual deployment command
+        env:
+          FIREFOX_ADDONS_API_KEY: ${{ secrets.FIREFOX_ADDONS_API_KEY }}
+          FIREFOX_ADDONS_API_SECRET: ${{ secrets.FIREFOX_ADDONS_API_SECRET }}
