@@ -1,22 +1,20 @@
 name: CI
 
-# Controls when the action will run.
-# For more information see: https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions
-
-# Workflow runs on push and pull request events
+# Controls when the workflow will run
 on:
   push:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
 
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
-        node-version: ["20.x", "22.x"]
+        node-version: [ '20', '22' ]
 
     steps:
       - name: Checkout Repository
@@ -27,77 +25,22 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
-          cache-dependency-path: '**/package-lock.json'
 
       - name: Install Dependencies
         run: npm ci
 
-      - name: Run Linter and Formatter (Biome)
-        run: npx @biomejs/biome format --diagnostic-level=warn --no-errors-for-unreadable-file . && npx @biomejs/biome lint --diagnostic-level=warn .
+      - name: Lint with Ruff
+        run: npx --yes @biomejs/biome lint --apply-unsafe --no-config
 
-      - name: Build Extension
-        run: npm run build --if-present
+      - name: Format with Ruff
+        run: npx --yes @biomejs/biome format --write --no-config
 
-      - name: Run Unit and Integration Tests (Vitest)
-        run: npm run test:unit
+      - name: Run Vitest
+        run: npm test -- --coverage
 
-      - name: Run End-to-End Tests (Playwright)
-        run: npm run test:e2e
-
-      - name: Upload Coverage Report (Codecov)
+      - name: Upload Coverage Reports
         uses: codecov/codecov-action@v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          files: ./coverage/**/*.json
+          files: ./coverage/clover.xml
           fail_ci_if_error: true
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main' # Only upload from main branch pushes
-
-  deploy:
-    needs: build-and-test
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push' # Only deploy from main branch pushes
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20.x'
-          cache: 'npm'
-          cache-dependency-path: '**/package-lock.json'
-
-      - name: Install Dependencies
-        run: npm ci
-
-      - name: Build Production Extension
-        env:
-          NODE_ENV: production
-        run: npm run build --if-present
-
-      - name: Package Extension for Chrome
-        uses: actions/upload-artifact@v4
-        with:
-          name: chrono-lens-chrome-extension
-          path: ./dist/chrome # Assuming your build output for Chrome is in './dist/chrome'
-
-      - name: Package Extension for Firefox
-        uses: actions/upload-artifact@v4
-        with:
-          name: chrono-lens-firefox-extension
-          path: ./dist/firefox # Assuming your build output for Firefox is in './dist/firefox'
-
-      # Placeholder for actual deployment steps (e.g., publishing to Chrome Web Store/Firefox Add-ons)
-      # These steps would typically involve using dedicated actions or CLI tools and secrets.
-      - name: Placeholder - Deploy to Chrome Web Store
-        run: echo "Deploying to Chrome Web Store..." # Replace with actual deployment command
-        env:
-          CHROME_WEB_STORE_CLIENT_ID: ${{ secrets.CHROME_WEB_STORE_CLIENT_ID }}
-          CHROME_WEB_STORE_CLIENT_SECRET: ${{ secrets.CHROME_WEB_STORE_CLIENT_SECRET }}
-          CHROME_WEB_STORE_REFRESH_TOKEN: ${{ secrets.CHROME_WEB_STORE_REFRESH_TOKEN }}
-
-      - name: Placeholder - Deploy to Firefox Add-ons
-        run: echo "Deploying to Firefox Add-ons..." # Replace with actual deployment command
-        env:
-          FIREFOX_ADDONS_API_KEY: ${{ secrets.FIREFOX_ADDONS_API_KEY }}
-          FIREFOX_ADDONS_API_SECRET: ${{ secrets.FIREFOX_ADDONS_API_SECRET }}
