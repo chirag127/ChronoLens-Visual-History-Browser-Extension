@@ -1,19 +1,68 @@
-build_status:
-  enabled: true
-  workflow_name: "CI"
-  branch: "main"
-coverage:
-  enabled: true
-  repository_coverage_provider: "codecov"
-tech_stack:
-  enabled: true
-  languages:
-    - "JavaScript"
-lint_format:
-  enabled: true
-  linter: "ESLint"
-license:
-  enabled: true
-  license_type: "CC BY-NC 4.0"
-github_stars:
-  enabled: true
+# badges.yml - Centralized Badge Configuration
+# This file serves as the Single Source of Truth (SSOT) for all repository badges.
+# Style: flat-square
+
+badges:
+  # --- CI/CD & Code Quality ---
+  - name: "Build Status"
+    markdown: "[
+![Build Status](https://img.shields.io/github/actions/workflow/status/chirag127/ChronoLens-Visual-Browsing-History-Browser-Extension/ci.yml?branch=main&style=flat-square)
+](https://github.com/chirag127/ChronoLens-Visual-Browsing-History-Browser-Extension/actions/workflows/ci.yml)"
+    url: "https://github.com/chirag127/ChronoLens-Visual-Browsing-History-Browser-Extension/actions/workflows/ci.yml"
+
+  - name: "Code Coverage"
+    markdown: "[
+![Code Coverage](https://img.shields.io/codecov/c/github/chirag127/ChronoLens-Visual-Browsing-History-Browser-Extension?style=flat-square&token=YOUR_CODECOV_TOKEN_PLACEHOLDER)
+](https://codecov.io/gh/chirag127/ChronoLens-Visual-Browsing-History-Browser-Extension)"
+    url: "https://codecov.io/gh/chirag127/ChronoLens-Visual-Browsing-History-Browser-Extension"
+
+  - name: "Linting & Formatting (Biome)"
+    markdown: "[
+![Styled with Biome](https://img.shields.io/badge/Styled_with-Biome-563d7c?style=flat-square&logo=biome)
+](https://biomejs.dev/)"
+    url: "https://biomejs.dev/"
+
+  # --- Tech Stack ---
+  - name: "TypeScript"
+    markdown: "
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white)
+"
+    url: "https://www.typescriptlang.org/"
+
+  - name: "React"
+    markdown: "
+![React](https://img.shields.io/badge/React-20232A?style=flat-square&logo=react&logoColor=61DAFB)
+"
+    url: "https://react.dev/"
+
+  - name: "Vite"
+    markdown: "
+![Vite](https://img.shields.io/badge/Vite-646CFF?style=flat-square&logo=vite&logoColor=white)
+"
+    url: "https://vitejs.dev/"
+
+  - name: "Tailwind CSS"
+    markdown: "
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white)
+"
+    url: "https://tailwindcss.com/"
+
+  # --- Repository Metadata ---
+  - name: "License"
+    markdown: "[
+![License](https://img.shields.io/github/license/chirag127/ChronoLens-Visual-Browsing-History-Browser-Extension?style=flat-square)
+](https://github.com/chirag127/ChronoLens-Visual-Browsing-History-Browser-Extension/blob/main/LICENSE)"
+    url: "https://github.com/chirag127/ChronoLens-Visual-Browsing-History-Browser-Extension/blob/main/LICENSE"
+
+  - name: "GitHub Stars"
+    markdown: "[
+![GitHub Stars](https://img.shields.io/github/stars/chirag127/ChronoLens-Visual-Browsing-History-Browser-Extension?style=flat-square&logo=github)
+](https://github.com/chirag127/ChronoLens-Visual-Browsing-History-Browser-Extension/stargazers)"
+    url: "https://github.com/chirag127/ChronoLens-Visual-Browsing-History-Browser-Extension/stargazers"
+
+  # --- Social & Call to Action ---
+  - name: "Star this Repo"
+    markdown: "[
+![Star this Repo](https://img.shields.io/badge/Star%20this%20Repo-%E2%98%85-yellow?style=flat-square)
+](https://github.com/chirag127/ChronoLens-Visual-Browsing-History-Browser-Extension)"
+    url: "https://github.com/chirag127/ChronoLens-Visual-Browsing-History-Browser-Extension"
