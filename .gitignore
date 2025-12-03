@@ -1,82 +1,42 @@
-# Node/NPM related
+# Node.js
 node_modules/
+
+# Lock files (if not intended to be committed)
+# package-lock.json # Usually committed for consistency
+yarn.lock
+pnpm-lock.yaml
+
+# Logs
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-publish-logs
+pnpm-debug.log*
+*.log
 
-# Build output
+# Build artifacts
 dist/
 build/
-.turbo/
-
-# IDE and editor specific
-.vscode/
-.idea/
-*.iml
-*.ipr
-*.iws
-.DS_Store
-
-# OS specific
-Thumbs.db
-
-# Runtime data
-logs
-*.log
-npm-debug.log*
-*.pid
-*.pid.lock
-
-# Dependencies
-/node_modules
-/.pnp
-.pnp.js
-
-# Testing
 coverage/
-*.test*
-*.spec*
 
 # Environment variables
 .env
 .env.local
-.env.development.local
-.env.test.local
-.env.production.local
+.env.*.local
 
-# Vite build cache
-.vite/
+# TypeScript
+*.tsbuildinfo
 
-# Tauri specific
-.tauri/
-src-tauri/target/
+# IDEs and other tools
+.vscode/
+.idea/
+.history/
+*.iml
 
-# Python specific (if applicable for shared dev environments)
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
-.Python
-build
-develop-eggs
-dist
-downloads
-eggs
-.eggs
-lib
-lib64
-parts
-sdp-report.json
-var
-wheels
-*.egg-info
-.installed.pkgs
-*.egg
-MANIFEST
+# OS generated files
+.DS_Store
+Thumbs.db
 
-# Ruff specific
-.ruff_cache/
-
-# uv specific
-.uv/
+# Miscellaneous
+*.tmp
+*.bak
+*.swp
