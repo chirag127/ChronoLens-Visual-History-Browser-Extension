@@ -1,66 +1,63 @@
 ---
 name: Bug Report
-about: Create a report to help us improve
-title: "[BUG] Title of affected feature"
-labels: "bug"
+about: Report a bug or unexpected behavior in the project
+title: "[BUG]"
+labels: bug
 assignees: "chirag127"
 
+--- 
 
---- # ChronoLens Bug Report
+## Bug Description
 
-## 🐛 Description
+Please provide a clear and concise description of the bug.
 
-Please provide a clear and concise description of the bug. What did you expect to happen, and what actually happened?
+--- 
 
-## 💻 Environment
+## Steps to Reproduce
 
-*   **Extension Version:** (e.g., 1.0.0 - you can check this in `package.json`)
-*   **Browser:** (e.g., Chrome 120, Firefox 118)
-*   **Operating System:** (e.g., Windows 11, macOS Ventura, Ubuntu 22.04)
+1. Go to the relevant page or perform the action.
+2. Click on the component.
+3. Observe the unexpected behavior.
 
-## 📝 Steps to Reproduce
+--- 
 
-1.  Go to...
-2.  Click on...
-3.  Observe...
-4.  (Add as many steps as necessary)
+## Expected Behavior
 
-## 📸 Screenshots or Recordings
+What did you expect to happen?
 
-If applicable, add screenshots or a short video to help explain your problem. (Please ensure no sensitive information is visible).
+--- 
 
-## 💡 Additional Context
+## Actual Behavior
 
-Add any other context about the problem here. This could include:
+What actually happened? Please include any error messages.
 
-*   Specific websites where the bug occurs.
-*   Any error messages you encountered.
-*   Browser console logs (if accessible and relevant).
+--- 
 
-## 📜 AI Agent Directives & System Protocols
+## Environment
 
-*   **Purpose:** This section helps AI agents understand the project's core principles and technical stack for accurate debugging and enhancement.
-*   **Technology Stack:**
-    *   **Language:** JavaScript (ES6+)
-    *   **Framework/Runtime:** Browser Extension APIs (Chrome/Firefox)
-    *   **Build Tool:** Vite (for development builds)
-    *   **State Management:** Native Browser APIs, potentially `localStorage`/`chrome.storage`.
-    *   **Backend/API (if applicable):** Node.js, Express.js (for potential server-side interactions, though primary function is client-side).
-    *   **Database (if applicable):** MongoDB (for potential server-side persistence).
-*   **Architectural Patterns:**
-    *   **Extension Architecture:** Follow established browser extension patterns (background scripts, content scripts, popup/options pages).
-    *   **Code Quality:** Adhere to DRY (Don't Repeat Yourself) and SOLID principles where applicable.
-    *   **Modularity:** Maintain modularity for distinct features (history capture, UI rendering, search).
-*   **Testing Frameworks:**
-    *   **Unit/Integration:** Vitest (leveraging Vite tooling).
-    *   **E2E Testing:** Playwright (for end-to-end browser interactions).
-*   **Development & Deployment:**
-    *   **Version Control:** Git.
-    *   **CI/CD:** GitHub Actions (configured via `.github/workflows/ci.yml`).
-    *   **Linting/Formatting:** Biome (configured via `biome.json`).
+*   **Browser Extension Version:** [e.g., 1.2.3]
+*   **Browser:** [e.g., Chrome 120.0.6099.71, Firefox 115.0]
+*   **Operating System:** [e.g., Windows 11, macOS Ventura 13.5, Ubuntu 22.04]
+*   **Relevant Extensions/Add-ons:** [List any other extensions that might conflict]
 
-*   **AI Integration (if any):** Specific APIs, data formats, and error handling strategies.
+--- 
 
-*   **Verification:** If reproducing the bug requires specific AI prompts or configurations, please detail them here.
+## Additional Context
 
-**Please ensure your bug report provides enough detail for AI agents to analyze and potentially resolve the issue based on these defined protocols.**
+Add any other context about the problem here. Screenshots or screen recordings are highly encouraged.
+
+--- 
+
+## Developer Directives (For Core Contributors)
+
+This section is for internal team use and troubleshooting.
+
+*   **Reproduction Steps Verified:** [Y/N]
+*   **Root Cause Analysis:** [Link to issue/PR or brief description]
+*   **Resolution Plan:** [Link to issue/PR or brief description]
+
+--- 
+
+**Thank you for helping us improve ChronoLens!**
+
+*Remember, for any technical details or architectural specifications, please refer to the `AGENTS.md` file and ensure all contributions align with the Apex Technical Authority standards for `chirag127/ChronoLens-Visual-Browsing-History-Browser-Extension`.*
