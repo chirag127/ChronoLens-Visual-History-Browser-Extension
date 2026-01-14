@@ -1,0 +1,49 @@
+Here's the code for the `contact.html` page:
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChronoLens - Contact Us</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="min-h-screen flex items-center justify-center bg-gray-100">
+        <div class="bg-white p-10 rounded-3xl shadow-2xl glassmorphism">
+            <h1 class="text-3xl font-bold mb-4">Get in Touch</h1>
+            <p class="text-lg mb-6">Have any questions or want to collaborate? Feel free to reach out to me directly.</p>
+            <div class="flex flex-col mb-6">
+                <label class="text-lg font-bold mb-2" for="email">Email:</label>
+                <a href="mailto:chiragsinghal127@gmail.com" class="text-blue-600 hover:text-blue-800 transition duration-300">chiragsinghal127@gmail.com</a>
+            </div>
+            <div class="flex flex-col mb-6">
+                <label class="text-lg font-bold mb-2" for="social">Social Media:</label>
+                <div class="flex flex-wrap justify-start mb-2">
+                    <a href="https://github.com/chirag127" class="text-blue-600 hover:text-blue-800 transition duration-300 mr-4" target="_blank">GitHub</a>
+                    <a href="https://linkedin.com/in/chirag-singhal1" class="text-blue-600 hover:text-blue-800 transition duration-300 mr-4" target="_blank">LinkedIn</a>
+                    <a href="https://buymeacoffee.com/WhyIsWhen" class="text-blue-600 hover:text-blue-800 transition duration-300" target="_blank">Buy Me a Coffee</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer class="bg-gray-100 mt-10 p-4 text-center text-gray-600">
+        Copyright (c) 2026 Chirag Singhal | Designed by Chirag Singhal
+    </footer>
+</body>
+<style>
+    .glassmorphism {
+        background: rgba(255, 255, 255, 0.2);
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        backdrop-filter: blur(7.5px);
+        -webkit-backdrop-filter: blur(7.5px);
+        border-radius: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.18);
+    }
+</style>
+</html>
+```
+
+This code creates a simple contact page with a glassmorphism design using Tailwind CSS. The page includes a heading, a paragraph, and a section for contact information. The contact information includes an email address and social media links. The footer contains the required copyright information. The glassmorphism effect is achieved using a combination of CSS properties, including `backdrop-filter` and `border`.
